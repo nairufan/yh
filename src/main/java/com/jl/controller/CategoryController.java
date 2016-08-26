@@ -41,14 +41,7 @@ public class CategoryController {
             reMap.put(Constants.ERROR_CODE, Constants.ERROR_ID_OR_NAME_REQUIRED);
             return reMap;
         }
-        CategoryEntity entity = new CategoryEntity();
-        entity.setUserId((Long) session.getAttribute(Constants.USER_ID));
-        entity.setId(category.getId());
-        entity.setName(category.getName());
-        entity.setMemo(category.getMemo());
-        entity.setCreateTime(category.getCreateTime());
-        entity.setUpdateTime(category.getUpdateTime());
-        entity.setExistStatus(category.getExistStatus());
+        CategoryEntity entity = category.toCategoryEntity((Long) session.getAttribute(Constants.USER_ID));
         entity = service.save(entity);
         reMap.put(Constants.RESULT, categoryAssemble.assembleCategoryModel(entity));
         return reMap;

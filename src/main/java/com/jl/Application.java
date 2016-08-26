@@ -1,9 +1,15 @@
 package com.jl;
 
+import com.jl.dataloader.DataLoader;
+import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 /**
  * Created by fannairu on 2016/6/17.
  */
@@ -11,8 +17,20 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+    private static Logger logger = Logger.getLogger(Application.class);
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        if (args.length >0) {
+            for (String arg : args) {
+                if (arg.endsWith("dataLoader")) {
+                    DataLoader dataLoader = new DataLoader();
+                    dataLoader.load();
+                } else if (arg.endsWith("help")) {
+                    logger.info("flag dataLoader: run data loader");
+                }
+            }
+        } else {
+            SpringApplication.run(Application.class, args);
+        }
     }
 
 

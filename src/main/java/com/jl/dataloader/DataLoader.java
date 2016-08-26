@@ -1,81 +1,105 @@
 package com.jl.dataloader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jl.beans.*;
+import com.jl.entity.OrderEntity;
+import com.jl.entity.OrderItemEntity;
+import com.jl.entity.UserEntity;
+import com.jl.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by fannairu on 2016/7/31.
  */
+@Component
 public class DataLoader {
-    private RestTemplate restTemplate = new RestTemplate();
-    private String baseUrl = "http://localhost/api/";
+    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private GoodsService goodsService;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private OrderItemService orderItemService;
 
-    public ResponseEntity<Map> createUser(HttpHeaders headers, String user) {
-        HttpEntity request = new HttpEntity(user, headers);
-        return restTemplate.postForEntity(baseUrl + "/user/register", request, Map.class);
+    public UserEntity createUser(String user) throws IOException {
+        UserBean userBean = objectMapper.readValue(user, UserBean.class);
+        return userService.save(userBean.toUserEntity());
     }
 
-    public void createGoods(HttpHeaders headers) throws IOException {
+    public void createGoods(Long userId) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(new File("C:/workspace_java/data/goods").toURI()), StandardCharsets.UTF_8);
         for (String c : lines) {
-            HttpEntity request = new HttpEntity(c, headers);
-            restTemplate.postForObject(baseUrl + "/goods", request, String.class);
+            GoodsBean goodsBean = objectMapper.readValue(c, GoodsBean.class);
+            goodsService.save(goodsBean.toGoodsEntity(userId));
         }
     }
 
-    public void createCategory(HttpHeaders headers) throws IOException {
+    public void createCategory(Long userId) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(new File("C:/workspace_java/data/category").toURI()), StandardCharsets.UTF_8);
         for (String c : lines) {
-            HttpEntity request = new HttpEntity(c, headers);
-            restTemplate.postForObject(baseUrl + "/category", request, String.class);
+            CategoryBean categoryBean = objectMapper.readValue(c, CategoryBean.class);
+            categoryService.save(categoryBean.toCategoryEntity(userId));
         }
     }
 
-    public void createCustomer(HttpHeaders headers) throws IOException {
+    public void createCustomer(Long userId) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(new File("C:/workspace_java/data/customer").toURI()), StandardCharsets.UTF_8);
         for (String c : lines) {
-            HttpEntity request = new HttpEntity(c, headers);
-            restTemplate.postForObject(baseUrl + "/customer", request, String.class);
+            CustomerBean customerBean = objectMapper.readValue(c, CustomerBean.class);
+            customerService.save(customerBean.toCustomerEntity(userId));
         }
     }
 
-    public void createOrder(HttpHeaders headers) throws IOException {
+    public void createOrder(Long userId) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(new File("C:/workspace_java/data/order").toURI()), StandardCharsets.UTF_8);
         StringBuilder sb = new StringBuilder();
         for (String c : lines) {
             sb.append(c);
         }
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Map> list = objectMapper.readValue(sb.toString().getBytes(), List.class);
-        for (Map order : list) {
-            HttpEntity request = new HttpEntity(order, headers);
-            restTemplate.postForObject(baseUrl + "/order", request, String.class);
+        List<OrderBean> list = objectMapper.readValue(sb.toString().getBytes(), List.class);
+        List<OrderItemEntity> orderItemEntities = new ArrayList<OrderItemEntity>();
+        List<OrderEntity> orderEntities = new ArrayList<>();
+        for (OrderBean orderBean : list) {
+            for (OrderItemBean orderItemBean : orderBean.getItems()) {
+                OrderItemEntity orderItemEntity = orderItemBean.toOrderItemEntity(userId);
+                orderItemEntities.add(orderItemEntity);
+            }
+            OrderEntity orderEntity = orderBean.toOrderEntity(userId);
+            orderEntities.add(orderEntity);
         }
+        orderItemService.save(orderItemEntities);
+        orderService.save(orderEntities);
     }
 
-//    public static void main(String[] args) throws IOException, URISyntaxException {
-//        DataLoader dataLoader = new DataLoader();
-//        List<String> lines = Files.readAllLines(Paths.get(new File("C:/workspace_java/data/users").toURI()), StandardCharsets.UTF_8);
-//        for (String user : lines) {
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-//            ResponseEntity<Map> response = dataLoader.createUser(headers, user);
-////            headers.add("Cookie", response.getHeaders().get("Set-Cookie").get(0));
-////            dataLoader.createCategory(headers);
-////            dataLoader.createGoods(headers);
-////            dataLoader.creates
-//// Customer(headers);
-////            dataLoader.createOrder(headers);
-//        }
-//    }
+    public void load() throws IOException, URISyntaxException {
+        DataLoader dataLoader = new DataLoader();
+        List<String> lines = Files.readAllLines(Paths.get(DataLoader.class.getResource("/resources/data/users").toURI()), StandardCharsets.UTF_8);
+        for (String user : lines) {
+            UserEntity userEntity = dataLoader.createUser(user);
+            dataLoader.createCategory(userEntity.getId());
+            dataLoader.createGoods(userEntity.getId());
+            dataLoader.createCustomer(userEntity.getId());
+            dataLoader.createOrder(userEntity.getId());
+        }
+    }
 }
 

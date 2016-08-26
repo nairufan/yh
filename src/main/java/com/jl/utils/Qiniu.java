@@ -3,12 +3,10 @@ package com.jl.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jl.properties.QiniuProperties;
 import com.qiniu.common.QiniuException;
-import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.stereotype.Component;
 import ytx.org.apache.http.HttpResponse;
 import ytx.org.apache.http.client.HttpClient;
@@ -17,12 +15,6 @@ import ytx.org.apache.http.entity.StringEntity;
 import ytx.org.apache.http.impl.client.DefaultHttpClient;
 import ytx.org.apache.http.params.CoreConnectionPNames;
 import ytx.org.apache.http.util.EntityUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 
 /**

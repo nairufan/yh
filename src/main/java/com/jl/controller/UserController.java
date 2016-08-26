@@ -44,12 +44,17 @@ public class UserController {
     @Autowired
     private HttpSession session;
 
+    /**
+     * create user & login
+     *
+     * @param userBean
+     * @return
+     */
     @POST
-    @Path("register")
-    @Consumes("application/json")
-    public Map register(UserBean userBean) {
+    @Path("login")
+    public Map login(UserBean userBean) {
         Map reMap = new HashMap<String, Object>();
-
+        UserEntity userEntity = userService.findByTel(userBean.getTel());
         if (!validateTimeout(session.getAttribute(Constants.SEND_TIME))) {
             reMap.put(Constants.ERROR_CODE, Constants.ERROR_CHECK_CODE_TIME_OUT);
             return reMap;
@@ -58,18 +63,10 @@ public class UserController {
             reMap.put(Constants.ERROR_CODE, Constants.ERROR_CHECK_CODE);
             return reMap;
         }
-        UserEntity userEntity = userService.findByTel(userBean.getTel());
-        if (userEntity != null) {
-            reMap.put(Constants.ERROR_CODE, Constants.ERROR_PHONE_EXISTS);
-            return reMap;
+        if (userEntity == null) { // register
+            userEntity = userBean.toUserEntity();
+            userEntity = userService.save(userEntity);
         }
-        userEntity = new UserEntity();
-        userEntity.setTel(userBean.getTel());
-        userEntity.setPassword(md5.encrypt(userBean.getPassword()));
-        userEntity.setCreateTime(new Date(System.currentTimeMillis()));
-        userEntity.setUsername(userBean.getTel());
-        userEntity.setRole(Constants.ROLE_USER);
-        userEntity = userService.save(userEntity);
         SecurityContextHolder.getContext().setAuthentication(authenticate(userEntity));
         session.setAttribute(Constants.USER_ID, userEntity.getId());
         session.setAttribute(Constants.CHECK_CODE, null);
@@ -111,48 +108,6 @@ public class UserController {
         UserEntity userEntity = userService.findOne(userId);
         userEntity.setGender(userBean.getGender());
         userEntity = userService.save(userEntity);
-        reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
-        return reMap;
-    }
-
-    @POST
-    @Path("user")
-    public Map user(UserBean userBean) {
-        Map reMap = new HashMap<String, Object>();
-        Long userId = (Long) session.getAttribute(Constants.USER_ID);
-        UserEntity userEntity = userService.findOne(userId);
-        userEntity.setGender(userBean.getGender());
-        userEntity.setUsername(userBean.getUsername());
-        userEntity.setAvatar(userBean.getAvatar());
-        userEntity = userService.save(userEntity);
-        reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
-        return reMap;
-    }
-
-    @POST
-    @Path("login")
-    public Map login(UserBean userBean) {
-        Map reMap = new HashMap<String, Object>();
-        UserEntity userEntity = userService.findByTel(userBean.getTel());
-        if (!validateTimeout(session.getAttribute(Constants.SEND_TIME))) {
-            reMap.put(Constants.ERROR_CODE, Constants.ERROR_CHECK_CODE_TIME_OUT);
-            return reMap;
-        }
-        if (!validateCheckCode(userBean.getCheckcode(), session.getAttribute(Constants.CHECK_CODE))) {
-            reMap.put(Constants.ERROR_CODE, Constants.ERROR_CHECK_CODE);
-            return reMap;
-        }
-        if (userEntity == null) { // register
-            userEntity = new UserEntity();
-            userEntity.setTel(userBean.getTel());
-            userEntity.setCreateTime(new Date(System.currentTimeMillis()));
-            userEntity.setUsername(userBean.getTel());
-            userEntity.setRole(Constants.ROLE_USER);
-            userEntity = userService.save(userEntity);
-        }
-        SecurityContextHolder.getContext().setAuthentication(authenticate(userEntity));
-        session.setAttribute(Constants.USER_ID, userEntity.getId());
-        session.setAttribute(Constants.CHECK_CODE, null);
         reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
         return reMap;
     }

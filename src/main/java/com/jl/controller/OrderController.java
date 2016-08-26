@@ -69,32 +69,12 @@ public class OrderController {
             entity = new OrderEntity();
             List<OrderItemEntity> orderItemEntities = new ArrayList<OrderItemEntity>();
             for (OrderItemBean orderItemBean : orderBean.getItems()) {
-                OrderItemEntity orderItemEntity = new OrderItemEntity();
-                orderItemEntity.setId(orderItemBean.getId());
-                orderItemEntity.setCreateTime(orderItemBean.getCreateTime());
-                orderItemEntity.setUpdateTime(orderItemBean.getUpdateTime());
-                orderItemEntity.setUserId(userId);
-                orderItemEntity.setGoodsId(orderItemBean.getGoodsId());
-                orderItemEntity.setOrderId(orderItemBean.getOrderId());
-                orderItemEntity.setAmount(orderItemBean.getAmount());
-                orderItemEntity.setExistStatus(orderItemBean.getExistStatus());
+                OrderItemEntity orderItemEntity = orderItemBean.toOrderItemEntity(userId);
                 orderItemEntities.add(orderItemEntity);
             }
             orderItemService.save(orderItemEntities);
         }
-        entity.setId(orderBean.getId());
-        entity.setUserId(userId);
-        entity.setCustomerId(orderBean.getCustomerId());
-        entity.setMemo(orderBean.getMemo());
-        entity.setExpressNumber(orderBean.getExpressNumber());
-        entity.setExpressName(orderBean.getExpressName());
-        entity.setCreateTime(orderBean.getCreateTime());
-        entity.setUpdateTime(orderBean.getUpdateTime());
-        entity.setStatus(orderBean.getStatus());
-        entity.setExistStatus(orderBean.getExistStatus());
-        entity.setCustomerName(orderBean.getCustomerName());
-        entity.setCustomerTel(orderBean.getCustomerTel());
-        entity.setCustomerAddress(orderBean.getCustomerAddress());
+        orderBean.toOrderEntity(userId);
         entity = orderService.save(entity);
         reMap.put(Constants.RESULT, orderAssemble.assembleOrderModel(entity));
         return reMap;

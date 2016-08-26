@@ -15,10 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
-import java.sql.Date;
 import java.util.*;
 
 /**
@@ -44,11 +42,7 @@ public class AdviceController {
     @Consumes("application/json")
     public Map create(AdviceBean adviceBean) {
         Map reMap = new HashMap();
-        AdviceEntity adviceEntity = new AdviceEntity();
-        adviceEntity.setContent(adviceBean.getContent());
-        adviceEntity.setCreateTime(new Date(System.currentTimeMillis()));
-        adviceEntity.setStatus(Constants.INIT_STATUS);
-        adviceEntity.setUserId((Long) session.getAttribute(Constants.USER_ID));
+        AdviceEntity adviceEntity = adviceBean.toAdviceEntity((Long) session.getAttribute(Constants.USER_ID));
         adviceService.save(adviceEntity);
         reMap.put(Constants.RESULT, Constants.SUCCESS);
         return reMap;

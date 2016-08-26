@@ -41,20 +41,7 @@ public class CustomerController {
             reMap.put(Constants.ERROR_CODE, Constants.ERROR_ID_OR_NAME_REQUIRED);
             return reMap;
         }
-        CustomerEntity entity = new CustomerEntity();
-        entity.setUserId((Long) session.getAttribute(Constants.USER_ID));
-        entity.setId(customer.getId());
-        entity.setMemo(customer.getMemo());
-        entity.setCustomerName(customer.getCustomerName());
-        entity.setCustomerAddress(customer.getCustomerAddress());
-        entity.setCustomerTel(customer.getCustomerTel());
-        entity.setCreateTime(customer.getCreateTime());
-        entity.setUpdateTime(customer.getUpdateTime());
-        entity.setPics(customer.getPics());
-        entity.setExistStatus(customer.getExistStatus());
-        entity.setLevel(customer.getLevel());
-        entity.setCustomerGroup(customer.getCustomerGroup());
-        entity.setIsDefault(customer.getIsDefault());
+        CustomerEntity entity = customer.toCustomerEntity((Long) session.getAttribute(Constants.USER_ID));
         entity = customerService.save(entity);
         reMap.put(Constants.RESULT, customerAssemble.assembleCustomerModel(entity));
         return reMap;

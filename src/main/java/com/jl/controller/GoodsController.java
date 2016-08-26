@@ -45,17 +45,7 @@ public class GoodsController {
             reMap.put(Constants.ERROR_CODE, Constants.ERROR_ID_OR_NAME_REQUIRED);
             return reMap;
         }
-        GoodsEntity entity = new GoodsEntity();
-        entity.setUserId((Long) session.getAttribute(Constants.USER_ID));
-        entity.setId(goodsBean.getId());
-        entity.setProductName(goodsBean.getProductName());
-        entity.setInventory(goodsBean.getInventory());
-        entity.setPics(goodsBean.getPics());
-        entity.setCategoryId(goodsBean.getCategoryId());
-        entity.setMemo(goodsBean.getMemo());
-        entity.setCreateTime(goodsBean.getCreateTime());
-        entity.setUpdateTime(goodsBean.getUpdateTime());
-        entity.setExistStatus(goodsBean.getExistStatus());
+        GoodsEntity entity = goodsBean.toGoodsEntity((Long) session.getAttribute(Constants.USER_ID));
         entity = goodsService.save(entity);
         reMap.put(Constants.RESULT, goodsAssemble.assembleGoodsModel(entity));
 

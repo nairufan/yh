@@ -1,6 +1,8 @@
 package com.jl.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.jl.entity.OrderEntity;
+import com.jl.entity.UserEntity;
 
 /**
  * Created by fannairu on 2016/7/2.
@@ -92,5 +94,23 @@ public class OrderBean extends BaseBean {
 
     public void setCustomerAddress(String customerAddress) {
         this.customerAddress = customerAddress;
+    }
+
+    public OrderEntity toOrderEntity(Long userId) {
+        OrderEntity entity = new OrderEntity();
+        entity.setId(this.getId());
+        entity.setUserId(userId);
+        entity.setCustomerId(this.getCustomerId());
+        entity.setMemo(this.getMemo());
+        entity.setExpressNumber(this.getExpressNumber());
+        entity.setExpressName(this.getExpressName());
+        entity.setCreateTime(this.getCreateTime());
+        entity.setUpdateTime(this.getUpdateTime());
+        entity.setStatus(this.getStatus());
+        entity.setExistStatus(this.getExistStatus());
+        entity.setCustomerName(this.getCustomerName());
+        entity.setCustomerTel(this.getCustomerTel());
+        entity.setCustomerAddress(this.getCustomerAddress());
+        return entity;
     }
 }

@@ -1,14 +1,18 @@
 package com.jl.beans;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.jl.entity.UserEntity;
+import com.jl.utils.Constants;
+import com.jl.utils.Md5;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.sql.Date;
 
 /**
  * Created by fannairu on 2016/6/22.
  */
 @XmlRootElement
-public class UserBean{
+public class UserBean {
     private String tel;
     private String password;
     private String checkcode;
@@ -62,5 +66,21 @@ public class UserBean{
 
     public void setGender(Integer gender) {
         this.gender = gender;
+    }
+
+    public UserEntity toUserEntity() {
+        UserEntity userEntity = new UserEntity();
+        String username = this.getUsername();
+        if (username == null || "".endsWith(username)) {
+            username = this.getTel();
+        }
+        userEntity.setTel(this.getTel());
+        userEntity.setCreateTime(new Date(System.currentTimeMillis()));
+        userEntity.setGender(this.getGender());
+        userEntity.setAvatar(this.getAvatar());
+        userEntity.setUsername(username);
+        userEntity.setRole(Constants.ROLE_USER);
+        userEntity.setPassword(new Md5().encrypt(this.getPassword()));
+        return userEntity;
     }
 }

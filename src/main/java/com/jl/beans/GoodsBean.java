@@ -1,11 +1,13 @@
 package com.jl.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.jl.entity.GoodsEntity;
+import com.jl.utils.Constants;
 
 /**
  * Created by fannairu on 2016/6/29.
  */
-public class GoodsBean extends BaseBean{
+public class GoodsBean extends BaseBean {
     @JsonProperty(value = "product_name")
     private String productName;
     private String pics;
@@ -52,5 +54,20 @@ public class GoodsBean extends BaseBean{
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public GoodsEntity toGoodsEntity(Long userId) {
+        GoodsEntity entity = new GoodsEntity();
+        entity.setUserId(userId);
+        entity.setId(this.getId());
+        entity.setProductName(this.getProductName());
+        entity.setInventory(this.getInventory());
+        entity.setPics(this.getPics());
+        entity.setCategoryId(this.getCategoryId());
+        entity.setMemo(this.getMemo());
+        entity.setCreateTime(this.getCreateTime());
+        entity.setUpdateTime(this.getUpdateTime());
+        entity.setExistStatus(this.getExistStatus());
+        return entity;
     }
 }

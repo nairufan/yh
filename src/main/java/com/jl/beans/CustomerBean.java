@@ -1,11 +1,13 @@
 package com.jl.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.jl.entity.CustomerEntity;
+import com.jl.utils.Constants;
 
 /**
  * Created by fannairu on 2016/6/28.
  */
-public class CustomerBean extends BaseBean{
+public class CustomerBean extends BaseBean {
 
     @JsonProperty(value = "customer_name")
     private String customerName;
@@ -83,5 +85,23 @@ public class CustomerBean extends BaseBean{
 
     public void setCustomerGroup(String customerGroup) {
         this.customerGroup = customerGroup;
+    }
+
+    public CustomerEntity toCustomerEntity(Long userId) {
+        CustomerEntity entity = new CustomerEntity();
+        entity.setUserId(userId);
+        entity.setId(this.getId());
+        entity.setMemo(this.getMemo());
+        entity.setCustomerName(this.getCustomerName());
+        entity.setCustomerAddress(this.getCustomerAddress());
+        entity.setCustomerTel(this.getCustomerTel());
+        entity.setCreateTime(this.getCreateTime());
+        entity.setUpdateTime(this.getUpdateTime());
+        entity.setPics(this.getPics());
+        entity.setExistStatus(this.getExistStatus());
+        entity.setLevel(this.getLevel());
+        entity.setCustomerGroup(this.getCustomerGroup());
+        entity.setIsDefault(this.getIsDefault());
+        return entity;
     }
 }
