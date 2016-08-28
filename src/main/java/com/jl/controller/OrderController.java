@@ -66,7 +66,6 @@ public class OrderController {
         Long userId = (Long) session.getAttribute(Constants.USER_ID);
         OrderEntity entity = orderService.findOne(orderBean.getId());
         if (entity == null) {
-            entity = new OrderEntity();
             List<OrderItemEntity> orderItemEntities = new ArrayList<OrderItemEntity>();
             for (OrderItemBean orderItemBean : orderBean.getItems()) {
                 OrderItemEntity orderItemEntity = orderItemBean.toOrderItemEntity(userId);
@@ -74,7 +73,7 @@ public class OrderController {
             }
             orderItemService.save(orderItemEntities);
         }
-        orderBean.toOrderEntity(userId);
+        entity = orderBean.toOrderEntity(userId);
         entity = orderService.save(entity);
         reMap.put(Constants.RESULT, orderAssemble.assembleOrderModel(entity));
         return reMap;

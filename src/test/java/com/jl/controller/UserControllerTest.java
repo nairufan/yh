@@ -40,7 +40,7 @@ public class UserControllerTest {
         UserBean userBean = new UserBean();
         userBean.setTel("13524715428");
         userBean.setGender(1);
-        userBean.setUsername("张三");
+        userBean.setUsername("admin");
         HttpEntity request = new HttpEntity(userBean, headers);
         ResponseEntity<Map> responseEntity = restTemplate.postForEntity("/api/user/login", request, Map.class);
         Map result = (Map) responseEntity.getBody().get("Result");

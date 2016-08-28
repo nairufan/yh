@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 public class Md5 {
     public String encrypt(String text) {
         if (text == null) {
-            return "";
+            return Constants.DEFAULT_PASSWORD;
         }
         MessageDigest md5 = null;
         try {

@@ -88,4 +88,8 @@ public class UserEntity{
     public void setGender(Integer gender) {
         this.gender = gender;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }

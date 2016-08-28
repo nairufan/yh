@@ -17,20 +17,8 @@ import java.net.URISyntaxException;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class Application {
-    private static Logger logger = Logger.getLogger(Application.class);
     public static void main(String[] args) throws IOException, URISyntaxException {
-        if (args.length >0) {
-            for (String arg : args) {
-                if (arg.endsWith("dataLoader")) {
-                    DataLoader dataLoader = new DataLoader();
-                    dataLoader.load();
-                } else if (arg.endsWith("help")) {
-                    logger.info("flag dataLoader: run data loader");
-                }
-            }
-        } else {
-            SpringApplication.run(Application.class, args);
-        }
+        SpringApplication.run(Application.class, args);
     }
 
 

@@ -75,6 +75,26 @@ public class UserController {
     }
 
     @POST
+    @Path("loginWithPassword")
+    public Map loginWithPassword(UserBean userBean) {
+        Map reMap = new HashMap<String, Object>();
+        UserEntity userEntity = userService.findByTel(userBean.getTel());
+        if (userEntity == null) { // register
+            reMap.put(Constants.ERROR_CODE, Constants.ERROR_NOT_EXISTS);
+            return reMap;
+        }
+        if (!validatePassword(userBean.getPassword(), userEntity.getPassword())) {
+            reMap.put(Constants.ERROR_CODE, Constants.ERROR_PASSWORD);
+            return reMap;
+        }
+        SecurityContextHolder.getContext().setAuthentication(authenticate(userEntity));
+        session.setAttribute(Constants.USER_ID, userEntity.getId());
+        session.setAttribute(Constants.CHECK_CODE, null);
+        reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
+        return reMap;
+    }
+
+    @POST
     @Path("avatar")
     public Map avatar(UserBean userBean) {
         Map reMap = new HashMap<String, Object>();

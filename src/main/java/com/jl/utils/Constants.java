@@ -22,6 +22,7 @@ public interface Constants {
     String CHECK_CODE = "check_code";
     String SEND_TIME = "send_time";
     String ERROR_SIG = "ERROR_SIGNATURE";
+    String DEFAULT_PASSWORD = "123456";
     int TIME_OUT = 2;
     int DELETE = -1;
     String ROLE_USER = "USER";
