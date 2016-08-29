@@ -153,7 +153,7 @@ public class UserController {
     public void logout() {
         Map reMap = new HashMap<String, Object>();
         SecurityContextHolder.getContext().setAuthentication(null);
-        session.setAttribute(Constants.USER_ID, null);
+        session.invalidate();
         reMap.put(Constants.RESULT, Constants.SUCCESS);
     }
 
