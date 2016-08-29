@@ -8,6 +8,7 @@ import com.jl.service.UserService;
 import com.jl.utils.Constants;
 import com.jl.utils.Md5;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import java.sql.Date;
@@ -43,6 +46,10 @@ public class UserController {
     private UserAssemble userAssemble;
     @Autowired
     private HttpSession session;
+    @Autowired
+    HttpServletResponse response;
+    @Value("${server.session.timeout}")
+    private int timeout;
 
     /**
      * create user & login
@@ -68,9 +75,18 @@ public class UserController {
             userEntity = userService.save(userEntity);
         }
         SecurityContextHolder.getContext().setAuthentication(authenticate(userEntity));
+        session.setMaxInactiveInterval(timeout);
         session.setAttribute(Constants.USER_ID, userEntity.getId());
         session.setAttribute(Constants.CHECK_CODE, null);
         reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
+        Cookie sessionCookie = new Cookie("SESSION", session.getId());
+        sessionCookie.setMaxAge(timeout);
+        sessionCookie.setPath("/");
+        response.addCookie(sessionCookie);
+        Cookie jSessionCookie = new Cookie("JSESSIONID", session.getId());
+        jSessionCookie.setMaxAge(timeout);
+        jSessionCookie.setPath("/");
+        response.addCookie(jSessionCookie);
         return reMap;
     }
 

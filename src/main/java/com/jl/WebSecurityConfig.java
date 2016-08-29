@@ -6,10 +6,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -49,6 +51,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(permitAllUrls).permitAll()
                 .antMatchers(adminUrls).hasRole("ADMIN")
-                .anyRequest().hasAnyRole(new String[]{"USER", "ADMIN"});
+                .anyRequest().hasAnyRole(new String[]{"USER", "ADMIN"})
+                .and()
+                .sessionManagement()
+                .maximumSessions(1).and()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
     }
 }
