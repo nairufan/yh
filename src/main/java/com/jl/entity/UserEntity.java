@@ -10,7 +10,6 @@ import java.sql.Date;
 @Table(name = "tb_user")
 public class UserEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private Date createTime;
     private Date updateTime;

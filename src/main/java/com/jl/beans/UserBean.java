@@ -7,6 +7,7 @@ import com.jl.utils.Md5;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
+import java.util.UUID;
 
 /**
  * Created by fannairu on 2016/6/22.
@@ -74,6 +75,7 @@ public class UserBean {
         if (username == null || "".endsWith(username)) {
             username = this.getTel();
         }
+        userEntity.setId(Math.abs(UUID.randomUUID().getMostSignificantBits()));
         userEntity.setTel(this.getTel());
         userEntity.setCreateTime(new Date(System.currentTimeMillis()));
         userEntity.setGender(this.getGender());

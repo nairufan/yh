@@ -78,15 +78,8 @@ public class UserController {
         session.setMaxInactiveInterval(timeout);
         session.setAttribute(Constants.USER_ID, userEntity.getId());
         session.setAttribute(Constants.CHECK_CODE, null);
+        addCookies();
         reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
-        Cookie sessionCookie = new Cookie("SESSION", session.getId());
-        sessionCookie.setMaxAge(timeout);
-        sessionCookie.setPath("/");
-        response.addCookie(sessionCookie);
-        Cookie jSessionCookie = new Cookie("JSESSIONID", session.getId());
-        jSessionCookie.setMaxAge(timeout);
-        jSessionCookie.setPath("/");
-        response.addCookie(jSessionCookie);
         return reMap;
     }
 
@@ -106,6 +99,7 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authenticate(userEntity));
         session.setAttribute(Constants.USER_ID, userEntity.getId());
         session.setAttribute(Constants.CHECK_CODE, null);
+        addCookies();
         reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
         return reMap;
     }
@@ -256,5 +250,16 @@ public class UserController {
         UserEntity userEntity = userService.findByTel(tel);
         reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
         return reMap;
+    }
+
+    public void addCookies() {
+        Cookie sessionCookie = new Cookie("SESSION", session.getId());
+        sessionCookie.setMaxAge(timeout);
+        sessionCookie.setPath("/");
+        response.addCookie(sessionCookie);
+        Cookie jSessionCookie = new Cookie("JSESSIONID", session.getId());
+        jSessionCookie.setMaxAge(timeout);
+        jSessionCookie.setPath("/");
+        response.addCookie(jSessionCookie);
     }
 }
