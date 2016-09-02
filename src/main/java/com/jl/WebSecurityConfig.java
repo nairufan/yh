@@ -36,6 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/build/**",
             "/orderdetail.html",
             "/orderdetail.js",
+            "/",
     };
 
     private String[] adminUrls = {
