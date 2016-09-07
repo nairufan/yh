@@ -5,6 +5,7 @@ import com.jl.beans.OrderItemBean;
 import com.jl.entity.GoodsEntity;
 import com.jl.entity.OrderEntity;
 import com.jl.entity.OrderItemEntity;
+import com.jl.model.GoodsModel;
 import com.jl.model.OrderModel;
 import com.jl.model.assembles.GoodsAssemble;
 import com.jl.model.assembles.OrderAssemble;
@@ -89,6 +90,7 @@ public class OrderController {
             return reMap;
         }
         entity.setExistStatus(Constants.DELETE);
+        orderService.save(entity);
         reMap.put(Constants.RESULT, Constants.SUCCESS);
         return reMap;
     }
@@ -129,17 +131,23 @@ public class OrderController {
 //            }
             Iterable<OrderItemEntity> orderItemEntityIterable = orderItemService.findByOrderId(orderId);
             List<Long> goodsIds = new ArrayList<Long>();
+            Map<Long, Integer> goodsCountMap = new HashMap();
             for (OrderItemEntity orderItemEntity : orderItemEntityIterable) {
                 goodsIds.add(orderItemEntity.getGoodsId());
+                goodsCountMap.put(orderItemEntity.getGoodsId(), orderItemEntity.getAmount());
             }
             if (goodsIds.size() > 0) {
                 Iterable<GoodsEntity> goodsEntityIterable = goodsService.findAll(goodsIds);
-                reMap.put("goods", goodsAssemble.assembleGoodsModelList(goodsEntityIterable));
+                List<GoodsModel> goodsModelList = goodsAssemble.assembleGoodsModelList(goodsEntityIterable);
+                for (GoodsModel goodsModel : goodsModelList) {
+                    goodsModel.setInventory(goodsCountMap.get(goodsModel.getId()));
+                }
+                reMap.put("goods", goodsModelList);
             }
             reMap.put("order", orderAssemble.assembleOrderModel(orderEntity));
             if (orderEntity.getExpressNumber() != null) {
                 try {
-                    reMap.put("express", kdniaoTrackQueryAPI.getOrderTracesByJson(orderEntity.getExpressName(), orderEntity.getExpressNumber()));
+                    reMap.put("express", kdniaoTrackQueryAPI.getOrderByExpressNumber(orderEntity.getExpressNumber()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -150,7 +158,7 @@ public class OrderController {
 
     @GET
     @Path("list")
-    public Map getOrderList(@QueryParam("userId") Long userId,@QueryParam("start") int start, @QueryParam("size") int size,
+    public Map getOrderList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
                             @QueryParam("sort") String sort) {
         Map reMap = new HashMap();
         if (sort == null || "".equals(sort)) {

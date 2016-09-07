@@ -1,5 +1,6 @@
 package com.jl.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jl.properties.KuaiDiNiaoProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -21,10 +23,23 @@ public class KdniaoTrackQueryAPI {
     @Autowired
     private KuaiDiNiaoProperties kuaiDINiaoProperties;
 
+    public String getOrderByExpressNumber(String expressNumber) throws Exception {
+        String result = getOrderEBusinessId(expressNumber);
+        ObjectMapper mapper = new ObjectMapper();
+        Map rs = mapper.readValue(result, Map.class);
+        String expressCode = "";
+        if (rs.get("Success").toString().endsWith("true")) {
+            List<Map<String, String>> shippers = (List) rs.get("Shippers");
+            if (shippers.size() > 0) {
+                expressCode = shippers.get(0).get("ShipperCode").toString();
+            }
+        }
+        return getOrderTracesByJson(expressCode, expressNumber);
+    }
     public String getOrderTracesByJson(String expCode, String expNo) throws Exception {
         String requestData = "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap();
         params.put("RequestData", urlEncoder(requestData, "UTF-8"));
         params.put("EBusinessID", kuaiDINiaoProperties.getEbid());
         params.put("RequestType", "1002");
@@ -34,6 +49,19 @@ public class KdniaoTrackQueryAPI {
 
         String result = sendPost(kuaiDINiaoProperties.getRequrl(), params);
 
+        return result;
+    }
+
+    public String getOrderEBusinessId(String expNo) throws Exception {
+        String requestData = "{'LogisticCode':'" + expNo + "'}";
+        Map<String, String> params = new HashMap();
+        params.put("RequestData", urlEncoder(requestData, "UTF-8"));
+        params.put("EBusinessID", kuaiDINiaoProperties.getEbid());
+        params.put("RequestType", "2002");
+        String dataSign = encrypt(requestData, kuaiDINiaoProperties.getAppkey(), "UTF-8");
+        params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
+        params.put("DataType", "2");
+        String result = sendPost(kuaiDINiaoProperties.getRequrl(), params);
         return result;
     }
 

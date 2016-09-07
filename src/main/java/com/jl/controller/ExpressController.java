@@ -1,13 +1,17 @@
 package com.jl.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jl.utils.KdniaoTrackQueryAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by fannairu on 2016/7/24.
@@ -22,7 +26,7 @@ public class ExpressController {
     @Cacheable("express")
     public String query(@QueryParam("expressCode") String expressCode, @QueryParam("expressNumber") String expressNumber) {
         try {
-            return kdniaoTrackQueryAPI.getOrderTracesByJson(expressCode, expressNumber);
+            return kdniaoTrackQueryAPI.getOrderByExpressNumber(expressNumber);
         } catch (Exception e) {
             e.printStackTrace();
             return e.toString();

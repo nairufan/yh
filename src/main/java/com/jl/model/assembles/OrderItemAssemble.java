@@ -22,6 +22,7 @@ public class OrderItemAssemble {
         model.setAmount(entity.getAmount());
         model.setGoodsId(entity.getGoodsId());
         model.setOrderId(entity.getOrderId());
+        model.setExistStatus(entity.getExistStatus());
         return model;
     }
 

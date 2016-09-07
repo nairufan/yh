@@ -24,6 +24,7 @@ public class GoodsAssemble {
         model.setCategoryId(entity.getCategoryId());
         model.setInventory(entity.getInventory());
         model.setProductName(entity.getProductName());
+        model.setExistStatus(entity.getExistStatus());
         return model;
     }
 

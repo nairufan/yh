@@ -25,6 +25,7 @@ public class CustomerAssemble {
         model.setPics(entity.getPics());
         model.setIsDefault(entity.getIsDefault());
         model.setCustomerGroup(entity.getCustomerGroup());
+        model.setExistStatus(entity.getExistStatus());
         return model;
     }
 

@@ -248,7 +248,11 @@ public class UserController {
     public Map getUser(@PathParam("tel") String tel) {
         Map reMap = new HashMap();
         UserEntity userEntity = userService.findByTel(tel);
-        reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
+        if (userEntity == null) {
+            reMap.put(Constants.RESULT, null);
+        } else {
+            reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
+        }
         return reMap;
     }
 

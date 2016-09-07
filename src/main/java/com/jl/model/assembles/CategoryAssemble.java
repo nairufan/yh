@@ -21,6 +21,7 @@ public class CategoryAssemble {
         model.setMemo(entity.getMemo());
         model.setCreateTime(entity.getCreateTime());
         model.setUpdateTime(entity.getUpdateTime());
+        model.setExistStatus(entity.getExistStatus());
         return model;
     }
 
