@@ -4,6 +4,7 @@ import com.cloopen.rest.sdk.CCPRestSDK;
 import com.jl.properties.YunLianTongProperties;
 import com.jl.utils.CheckCodeGenerator;
 import com.jl.utils.Constants;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,12 +31,16 @@ public class MessageController {
     private HttpSession session;
     @Autowired
     private YunLianTongProperties yunLianTongProperties;
+    private CCPRestSDK restAPI = new CCPRestSDK();
+    private Logger logger = Logger.getLogger(MessageController.class);
 
     @POST
     @Path("send/{tel}")
     public Map sendMessage(@PathParam("tel") final String tel) {
         Map reMap = new HashMap<String, Object>();
-        final String codes = generator.getCodes(4);
+        String codes = generator.getCodes(4);
+        logger.info("tel:" + tel);
+        logger.info("send code:" + codes);
         session.setAttribute(Constants.CHECK_CODE, codes);
         session.setAttribute(Constants.SEND_TIME, System.currentTimeMillis());
         sendSms(tel, codes, String.valueOf(Constants.TIME_OUT));
@@ -44,7 +49,6 @@ public class MessageController {
     }
 
     private Map sendSms(String tel, String checkcode, String timeout) {
-        CCPRestSDK restAPI = new CCPRestSDK();
         restAPI.init("app.cloopen.com", "8883");
         restAPI.setAccount(yunLianTongProperties.getAccount(), yunLianTongProperties.getToken());
         restAPI.setAppId(yunLianTongProperties.getAppid());

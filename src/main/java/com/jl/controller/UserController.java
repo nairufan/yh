@@ -7,6 +7,7 @@ import com.jl.model.assembles.UserAssemble;
 import com.jl.service.UserService;
 import com.jl.utils.Constants;
 import com.jl.utils.Md5;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -50,7 +51,7 @@ public class UserController {
     HttpServletResponse response;
     @Value("${server.session.timeout}")
     private int timeout;
-
+    private Logger logger = Logger.getLogger(UserController.class);
     /**
      * create user & login
      *
@@ -187,7 +188,9 @@ public class UserController {
     }
 
     private boolean validateCheckCode(String checkCode, Object sessionCheckCode) {
-        if (checkCode != null && "0000".endsWith(checkCode)) {
+        logger.info("para code:" + checkCode);
+        logger.info("session checkCode:" + sessionCheckCode);
+        if (checkCode != null && "0000".equals(checkCode)) {
             return true;
         }
         if (sessionCheckCode == null) {
