@@ -2,6 +2,7 @@ package com.jl.entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by fannairu on 2016/6/21.
@@ -11,8 +12,8 @@ import java.sql.Date;
 public class UserEntity{
     @Id
     private long id;
-    private Date createTime;
-    private Date updateTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private String tel;
     private String username;
     private String password;
@@ -28,19 +29,19 @@ public class UserEntity{
         this.id = id;
     }
 
-    public Date getCreateTime() {
+    public Timestamp getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public Timestamp getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
     }
 

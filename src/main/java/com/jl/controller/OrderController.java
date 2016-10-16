@@ -145,13 +145,6 @@ public class OrderController {
                 reMap.put("goods", goodsModelList);
             }
             reMap.put("order", orderAssemble.assembleOrderModel(orderEntity));
-            if (orderEntity.getExpressNumber() != null) {
-                try {
-                    reMap.put("express", kdniaoTrackQueryAPI.getOrderByExpressNumber(orderEntity.getExpressNumber()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return reMap;
     }

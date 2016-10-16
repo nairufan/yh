@@ -2,25 +2,26 @@ package com.jl.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by fannairu on 2016/6/23.
  */
 public class UserModel {
-    private long id;
+    private String id;
     private String tel;
     private String username;
     private String avatar;
     @JsonProperty(value = "create_time")
-    private Date createTime;
+    private Timestamp createTime;
     private String role;
     private Integer gender;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -48,11 +49,11 @@ public class UserModel {
         this.avatar = avatar;
     }
 
-    public Date getCreateTime() {
+    public Timestamp getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
 

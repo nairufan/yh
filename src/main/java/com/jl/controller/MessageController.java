@@ -26,7 +26,6 @@ import java.util.concurrent.Executors;
 public class MessageController {
     @Autowired
     private CheckCodeGenerator generator;
-    private ExecutorService executorService = Executors.newFixedThreadPool(5);
     @Autowired
     private HttpSession session;
     @Autowired
@@ -37,16 +36,10 @@ public class MessageController {
     public Map sendMessage(@PathParam("tel") final String tel) {
         Map reMap = new HashMap<String, Object>();
         final String codes = generator.getCodes(4);
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                Map map = sendSms(tel, codes, String.valueOf(Constants.TIME_OUT));
-                System.out.println(map);
-            }
-        });
-        reMap.put(Constants.RESULT, Constants.SUCCESS);
         session.setAttribute(Constants.CHECK_CODE, codes);
         session.setAttribute(Constants.SEND_TIME, System.currentTimeMillis());
+        sendSms(tel, codes, String.valueOf(Constants.TIME_OUT));
+        reMap.put(Constants.RESULT, Constants.SUCCESS);
         return reMap;
     }
 

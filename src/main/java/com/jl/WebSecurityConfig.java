@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
@@ -29,12 +30,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/user/login",
             "/api/user/loginWithPassword",
             "/api/order/detail",
-            "/api/express",
+            "/api/express/**",
             "/api/message/**",
             "/index.html",
             "/login.html",
             "/build/**",
             "/orderdetail.html",
+            "/express.html",
             "/orderdetail.js",
             "/",
     };
@@ -55,7 +57,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().hasAnyRole(new String[]{"USER", "ADMIN"})
                 .and()
                 .sessionManagement()
-                .maximumSessions(1).and()
+                .sessionFixation()
+                .changeSessionId()
+                .maximumSessions(1)
+                .expiredUrl("/api/error/multiple-login")
+                .maxSessionsPreventsLogin(true)
+                .sessionRegistry(new SessionRegistryImpl())
+                .and()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
     }
 }

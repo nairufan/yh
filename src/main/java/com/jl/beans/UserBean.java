@@ -7,6 +7,7 @@ import com.jl.utils.Md5;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 /**
@@ -77,7 +78,7 @@ public class UserBean {
         }
         userEntity.setId(Math.abs(UUID.randomUUID().getMostSignificantBits()));
         userEntity.setTel(this.getTel());
-        userEntity.setCreateTime(new Date(System.currentTimeMillis()));
+        userEntity.setCreateTime(new Timestamp(System.currentTimeMillis()));
         userEntity.setGender(this.getGender());
         userEntity.setAvatar(this.getAvatar());
         userEntity.setUsername(username);

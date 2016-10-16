@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class UserAssemble {
     public UserModel assembleUserModel(UserEntity entity) {
         UserModel model = new UserModel();
-        model.setId(entity.getId());
+        model.setId(new Long(entity.getId()).toString());
         model.setCreateTime(entity.getCreateTime());
         model.setTel(entity.getTel());
         model.setAvatar(entity.getAvatar());

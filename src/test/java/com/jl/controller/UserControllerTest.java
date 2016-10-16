@@ -39,6 +39,7 @@ public class UserControllerTest {
     public void loginAndCreate() throws IOException {
         UserBean userBean = new UserBean();
         userBean.setTel("13524715428");
+        userBean.setCheckcode("0000");
         userBean.setGender(1);
         userBean.setUsername("admin");
         HttpEntity request = new HttpEntity(userBean, headers);

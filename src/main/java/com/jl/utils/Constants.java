@@ -28,4 +28,5 @@ public interface Constants {
     String ROLE_USER = "USER";
     int INIT_STATUS = 0;
     int RESOLVE  = 1;
+    String ERROR_MULTIPLE_LOGIN = "MULTIPLE_LOGIN";
 }

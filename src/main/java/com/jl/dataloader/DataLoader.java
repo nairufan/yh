@@ -77,7 +77,7 @@ public class DataLoader {
         }
         List<OrderBean> list = objectMapper.readValue(sb.toString().getBytes(), List.class);
         List<OrderItemEntity> orderItemEntities = new ArrayList<OrderItemEntity>();
-        List<OrderEntity> orderEntities = new ArrayList<>();
+        List<OrderEntity> orderEntities = new ArrayList();
         for (OrderBean orderBean : list) {
             for (OrderItemBean orderItemBean : orderBean.getItems()) {
                 OrderItemEntity orderItemEntity = orderItemBean.toOrderItemEntity(userId);

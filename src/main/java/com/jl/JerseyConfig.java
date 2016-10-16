@@ -25,5 +25,6 @@ public class JerseyConfig extends ResourceConfig {
         register(ExpressController.class);
         register(AdviceController.class);
         register(ImageController.class);
+        register(ErrorController.class);
     }
 }

@@ -1,17 +1,14 @@
 package com.jl.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jl.utils.ExpressCode;
 import com.jl.utils.KdniaoTrackQueryAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import java.util.List;
+import javax.ws.rs.*;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Created by fannairu on 2016/7/24.
@@ -21,15 +18,36 @@ import java.util.Map;
 public class ExpressController {
     @Autowired
     private KdniaoTrackQueryAPI kdniaoTrackQueryAPI;
+    private Map codeMap = ExpressCode.getCodeMap();
 
     @GET
+    @Produces("application/json")
     @Cacheable("express")
-    public String query(@QueryParam("expressCode") String expressCode, @QueryParam("expressNumber") String expressNumber) {
+    public Map queryExpress(@QueryParam("expressNumber") String expressNumber) {
+        Map<String, String> reMap = new HashMap();
+        String info = "";
         try {
-            return kdniaoTrackQueryAPI.getOrderByExpressNumber(expressNumber);
+            info = kdniaoTrackQueryAPI.getOrderByExpressNumber(expressNumber);
         } catch (Exception e) {
             e.printStackTrace();
-            return e.toString();
         }
+        reMap.put("express", info);
+        return reMap;
+    }
+
+
+    @GET
+    @Path("shipper/{expressNumber}")
+    @Produces("application/json")
+    public Map query(@PathParam("expressNumber") String expressNumber) throws Exception {
+        Map reMap = new HashMap();
+        String code = kdniaoTrackQueryAPI.getShipperByExpressNumber(expressNumber);
+        Object codeObj = codeMap.get(code);
+        String realCode = code;
+        if (codeObj != null) {
+            realCode = codeObj.toString();
+        }
+        reMap.put("code", realCode);
+        return reMap;
     }
 }

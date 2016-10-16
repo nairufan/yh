@@ -3,6 +3,7 @@ package com.jl.beans;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by fannairu on 2016/6/26.
@@ -37,16 +38,16 @@ public abstract class BaseBean {
         this.id = id;
     }
 
-    public Date getCreateTime() {
-        return new Date(createTime);
+    public Timestamp getCreateTime() {
+        return new Timestamp(createTime);
     }
 
     public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
-        return new Date(updateTime);
+    public Timestamp getUpdateTime() {
+        return new Timestamp(updateTime);
     }
 
     public void setUpdateTime(long updateTime) {

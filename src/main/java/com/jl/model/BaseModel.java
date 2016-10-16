@@ -3,6 +3,7 @@ package com.jl.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by fannairu on 2016/6/27.
@@ -28,7 +29,7 @@ public abstract class BaseModel {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime.getTime();
     }
 
@@ -36,7 +37,7 @@ public abstract class BaseModel {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime.getTime();
     }
 

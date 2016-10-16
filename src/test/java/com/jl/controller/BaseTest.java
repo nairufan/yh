@@ -29,12 +29,9 @@ public class BaseTest {
         headers.setAccept(accepts);
         UserBean userBean = new UserBean();
         userBean.setTel("13524715428");
+        userBean.setCheckcode("0000");
         HttpEntity request = new HttpEntity(userBean, headers);
         ResponseEntity<Map> response = restTemplate.postForEntity("/api/user/login", request, Map.class);
         headers.add("Cookie", response.getHeaders().get("Set-Cookie").get(0));
-    }
-
-    protected void test() {
-
     }
 }

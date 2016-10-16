@@ -36,6 +36,21 @@ public class KdniaoTrackQueryAPI {
         }
         return getOrderTracesByJson(expressCode, expressNumber);
     }
+
+    public String getShipperByExpressNumber(String expressNumber) throws Exception {
+        String result = getOrderEBusinessId(expressNumber);
+        ObjectMapper mapper = new ObjectMapper();
+        Map rs = mapper.readValue(result, Map.class);
+        String expressCode = "";
+        if (rs.get("Success").toString().endsWith("true")) {
+            List<Map<String, String>> shippers = (List) rs.get("Shippers");
+            if (shippers.size() > 0) {
+                expressCode = shippers.get(0).get("ShipperCode").toString();
+            }
+        }
+        return expressCode;
+    }
+
     public String getOrderTracesByJson(String expCode, String expNo) throws Exception {
         String requestData = "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
 
