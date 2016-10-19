@@ -27,10 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import java.sql.Date;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by fannairu on 2016/6/21.
@@ -87,6 +84,27 @@ public class UserController {
     @POST
     @Path("loginWithPassword")
     public Map loginWithPassword(UserBean userBean) {
+        Map reMap = new HashMap<String, Object>();
+        UserEntity userEntity = userService.findByTel(userBean.getTel());
+        if (userEntity == null) { // register
+            reMap.put(Constants.ERROR_CODE, Constants.ERROR_NOT_EXISTS);
+            return reMap;
+        }
+        if (!validatePassword(userBean.getPassword(), userEntity.getPassword())) {
+            reMap.put(Constants.ERROR_CODE, Constants.ERROR_PASSWORD);
+            return reMap;
+        }
+        SecurityContextHolder.getContext().setAuthentication(authenticate(userEntity));
+        session.setAttribute(Constants.USER_ID, userEntity.getId());
+        session.setAttribute(Constants.CHECK_CODE, null);
+        addCookies();
+        reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
+        return reMap;
+    }
+
+    @POST
+    @Path("loginWithOpenId")
+    public Map loginWithOpenId(UserBean userBean) {
         Map reMap = new HashMap<String, Object>();
         UserEntity userEntity = userService.findByTel(userBean.getTel());
         if (userEntity == null) { // register

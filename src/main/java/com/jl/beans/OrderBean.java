@@ -23,6 +23,7 @@ public class OrderBean extends BaseBean {
     private String customerTel;
     @JsonProperty(value = "customer_address")
     private String customerAddress;
+    private double price;
 
     public long getCustomerId() {
         return customerId;
@@ -96,6 +97,14 @@ public class OrderBean extends BaseBean {
         this.customerAddress = customerAddress;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     public OrderEntity toOrderEntity(Long userId) {
         OrderEntity entity = new OrderEntity();
         entity.setId(this.getId());
@@ -111,6 +120,7 @@ public class OrderBean extends BaseBean {
         entity.setCustomerName(this.getCustomerName());
         entity.setCustomerTel(this.getCustomerTel());
         entity.setCustomerAddress(this.getCustomerAddress());
+        entity.setPrice(this.getPrice());
         return entity;
     }
 }

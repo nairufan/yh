@@ -18,6 +18,15 @@ public class OrderEntity extends BaseEntity {
     private String customerName;
     private String customerTel;
     private String customerAddress;
+    private double price;
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
     public long getCustomerId() {
         return customerId;

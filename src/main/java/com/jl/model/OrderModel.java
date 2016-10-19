@@ -20,6 +20,15 @@ public class OrderModel extends BaseModel {
     private String customerTel;
     @JsonProperty(value = "customer_address")
     private String customerAddress;
+    private double price;
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
     public long getCustomerId() {
         return customerId;
