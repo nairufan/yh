@@ -87,8 +87,8 @@ public class CategoryController {
 
     @GET
     @Path("list")
-    public Map getOrderList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
-                            @QueryParam("sort") String sort) {
+    public Map getCategoryList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
+                               @QueryParam("sort") String sort) {
         Map reMap = new HashMap();
         if (sort == null || "".equals(sort)) {
             sort = "DESC";
@@ -104,6 +104,15 @@ public class CategoryController {
         List<CategoryModel> categoryModels = categoryAssemble.assembleCategoryModelList(categoryEntities);
         reMap.put("categoryList", categoryModels);
         reMap.put("totalPages", categoryEntities.getTotalPages());
+        return reMap;
+    }
+
+    @GET
+    @Path("{id}")
+    public Map getCategory(@PathParam("id") long id) {
+        Map reMap = new HashMap<String, Object>();
+        CategoryEntity entity = service.findOne(id);
+        reMap.put(Constants.RESULT, categoryAssemble.assembleCategoryModel(entity));
         return reMap;
     }
 

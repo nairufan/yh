@@ -103,8 +103,17 @@ public class GoodsController {
     }
 
     @GET
+    @Path("{id}")
+    public Map getGood(@PathParam("id") long id) {
+        Map reMap = new HashMap();
+        GoodsEntity entity = goodsService.findOne(id);
+        reMap.put(Constants.RESULT, goodsAssemble.assembleGoodsModel(entity));
+        return reMap;
+    }
+
+    @GET
     @Path("list")
-    public Map getOrderList(@QueryParam("userId") Long userId,
+    public Map getGoodsList(@QueryParam("userId") Long userId,
                             @QueryParam("categoryId") Long categoryId,
                             @QueryParam("start") int start,
                             @QueryParam("size") int size,

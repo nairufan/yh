@@ -49,6 +49,7 @@ public class UserController {
     @Value("${server.session.timeout}")
     private int timeout;
     private Logger logger = Logger.getLogger(UserController.class);
+
     /**
      * create user & login
      *
@@ -274,6 +275,15 @@ public class UserController {
         } else {
             reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
         }
+        return reMap;
+    }
+
+    @GET
+    public Map getCurrentUser() {
+        Map reMap = new HashMap();
+        Long userId = (Long) session.getAttribute(Constants.USER_ID);
+        UserEntity userEntity = userService.findOne(userId);
+        reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
         return reMap;
     }
 

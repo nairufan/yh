@@ -104,7 +104,7 @@ public class CustomerController {
     @GET
     @Path("list")
     public Map getCustomerList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
-                            @QueryParam("sort") String sort) {
+                               @QueryParam("sort") String sort) {
         Map reMap = new HashMap();
         if (sort == null || "".equals(sort)) {
             sort = "DESC";
@@ -120,6 +120,15 @@ public class CustomerController {
         List<CustomerModel> customerModels = customerAssemble.assembleCustomerModelList(customerEntities);
         reMap.put("customerList", customerModels);
         reMap.put("totalPages", customerEntities.getTotalPages());
+        return reMap;
+    }
+
+    @GET
+    @Path("{id}")
+    public Map getCustomer(@PathParam("id") long id) {
+        Map reMap = new HashMap<String, Object>();
+        CustomerEntity entity = customerService.findOne(id);
+        reMap.put(Constants.RESULT, customerAssemble.assembleCustomerModel(entity));
         return reMap;
     }
 
