@@ -111,14 +111,7 @@ public class GoodsController {
         return reMap;
     }
 
-    @GET
-    @Path("list")
-    public Map getGoodsList(@QueryParam("userId") Long userId,
-                            @QueryParam("categoryId") Long categoryId,
-                            @QueryParam("start") int start,
-                            @QueryParam("size") int size,
-                            @QueryParam("sort") String sort) {
-        Map reMap = new HashMap();
+    private Page<GoodsEntity> getList(Long userId, Long categoryId, int start, int size, String sort) {
         if (sort == null || "".equals(sort)) {
             sort = "DESC";
         }
@@ -134,16 +127,49 @@ public class GoodsController {
         } else {
             goodsEntities = goodsService.findAll(pageable);
         }
-        List<GoodsModel> goodsModels = goodsAssemble.assembleGoodsModelList(goodsEntities);
+        return goodsEntities;
+    }
+
+    private Iterable<CategoryEntity> getCategoryList(List<GoodsModel> goodsModels) {
         List<Long> categoryIds = new LinkedList<Long>();
         for (GoodsModel goodsModel : goodsModels) {
             categoryIds.add(goodsModel.getCategoryId());
         }
-        Iterable<CategoryEntity> categoryEntities = categoryService.findAll(categoryIds);
+        return categoryService.findAll(categoryIds);
+    }
+
+    @GET
+    @Path("list")
+    public Map getGoodsList(@QueryParam("userId") Long userId,
+                            @QueryParam("categoryId") Long categoryId,
+                            @QueryParam("start") int start,
+                            @QueryParam("size") int size,
+                            @QueryParam("sort") String sort) {
+        Map reMap = new HashMap();
+
+        Page<GoodsEntity> goodsEntities = getList(userId, categoryId, start, size, sort);
+        List<GoodsModel> goodsModels = goodsAssemble.assembleGoodsModelList(goodsEntities);
+
         reMap.put("goodsList", goodsModels);
-        reMap.put("categoryMap", categoryAssemble.assembleCategoryModelMap(categoryEntities));
+        reMap.put("categoryMap", categoryAssemble.assembleCategoryModelMap(getCategoryList(goodsModels)));
         reMap.put("totalPages", goodsEntities.getTotalPages());
         return reMap;
     }
 
+    @GET
+    @Path("current-list")
+    public Map getCurrentGoodsList(@QueryParam("categoryId") Long categoryId,
+                            @QueryParam("start") int start,
+                            @QueryParam("size") int size,
+                            @QueryParam("sort") String sort) {
+        Map reMap = new HashMap();
+        Long userId = (Long) session.getAttribute(Constants.USER_ID);
+        Page<GoodsEntity> goodsEntities = getList(userId, categoryId, start, size, sort);
+        List<GoodsModel> goodsModels = goodsAssemble.assembleGoodsModelList(goodsEntities);
+
+        reMap.put("goodsList", goodsModels);
+        reMap.put("categoryMap", categoryAssemble.assembleCategoryModelMap(getCategoryList(goodsModels)));
+        reMap.put("totalPages", goodsEntities.getTotalPages());
+        return reMap;
+    }
 }
