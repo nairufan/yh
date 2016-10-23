@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * Created by fannairu on 2016/6/27.
  */
 public abstract class BaseModel {
-    protected String id;
+    protected Long id;
     @JsonProperty(value = "create_time")
     protected long createTime;
     @JsonProperty(value = "update_time")
@@ -17,12 +17,12 @@ public abstract class BaseModel {
     @JsonProperty(value = "exist_status")
     protected int existStatus;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
-        this.id = id.toString();
+        this.id = id;
     }
 
     public long getCreateTime() {
