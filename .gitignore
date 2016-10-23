@@ -1,5 +1,4 @@
 .gradle/
 .idea/
 app.log
-build/
 om.iml

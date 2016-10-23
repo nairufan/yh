@@ -101,11 +101,7 @@ public class CustomerController {
         return reMap;
     }
 
-    @GET
-    @Path("list")
-    public Map getCustomerList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
-                               @QueryParam("sort") String sort) {
-        Map reMap = new HashMap();
+    private Page<CustomerEntity> getList(Long userId, int start, int size, String sort) {
         if (sort == null || "".equals(sort)) {
             sort = "DESC";
         }
@@ -117,6 +113,28 @@ public class CustomerController {
         } else {
             customerEntities = customerService.findAll(pageable);
         }
+        return customerEntities;
+    }
+
+    @GET
+    @Path("list")
+    public Map getCustomerList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
+                               @QueryParam("sort") String sort) {
+        Map reMap = new HashMap();
+        Page<CustomerEntity> customerEntities = getList(userId, start, size, sort);
+        List<CustomerModel> customerModels = customerAssemble.assembleCustomerModelList(customerEntities);
+        reMap.put("customerList", customerModels);
+        reMap.put("totalPages", customerEntities.getTotalPages());
+        return reMap;
+    }
+
+    @GET
+    @Path("current-list")
+    public Map getCurrentCustomerList(@QueryParam("start") int start, @QueryParam("size") int size,
+                                      @QueryParam("sort") String sort) {
+        Map reMap = new HashMap();
+        Long userId = (Long) session.getAttribute(Constants.USER_ID);
+        Page<CustomerEntity> customerEntities = getList(userId, start, size, sort);
         List<CustomerModel> customerModels = customerAssemble.assembleCustomerModelList(customerEntities);
         reMap.put("customerList", customerModels);
         reMap.put("totalPages", customerEntities.getTotalPages());

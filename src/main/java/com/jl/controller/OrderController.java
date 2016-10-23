@@ -149,11 +149,7 @@ public class OrderController {
         return reMap;
     }
 
-    @GET
-    @Path("list")
-    public Map getOrderList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
-                            @QueryParam("sort") String sort) {
-        Map reMap = new HashMap();
+    private Page<OrderEntity> getList(Long userId, int start, int size, String sort) {
         if (sort == null || "".equals(sort)) {
             sort = "DESC";
         }
@@ -165,6 +161,29 @@ public class OrderController {
         } else {
             orderEntities = orderService.findAll(pageable);
         }
+
+        return orderEntities;
+    }
+
+    @GET
+    @Path("list")
+    public Map getOrderList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
+                            @QueryParam("sort") String sort) {
+        Map reMap = new HashMap();
+        Page<OrderEntity> orderEntities = getList(userId, start, size, sort);
+        List<OrderModel> orderModels = orderAssemble.assembleOrderModelList(orderEntities);
+        reMap.put("orderList", orderModels);
+        reMap.put("totalPages", orderEntities.getTotalPages());
+        return reMap;
+    }
+
+    @GET
+    @Path("current-list")
+    public Map getCurrentOrderList(@QueryParam("start") int start, @QueryParam("size") int size,
+                                   @QueryParam("sort") String sort) {
+        Map reMap = new HashMap();
+        Long userId = (Long) session.getAttribute(Constants.USER_ID);
+        Page<OrderEntity> orderEntities = getList(userId, start, size, sort);
         List<OrderModel> orderModels = orderAssemble.assembleOrderModelList(orderEntities);
         reMap.put("orderList", orderModels);
         reMap.put("totalPages", orderEntities.getTotalPages());

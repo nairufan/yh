@@ -85,11 +85,7 @@ public class CategoryController {
         return reMap;
     }
 
-    @GET
-    @Path("list")
-    public Map getCategoryList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
-                               @QueryParam("sort") String sort) {
-        Map reMap = new HashMap();
+    private Page<CategoryEntity> getList(Long userId, @QueryParam("start") int start, int size, String sort) {
         if (sort == null || "".equals(sort)) {
             sort = "DESC";
         }
@@ -101,6 +97,28 @@ public class CategoryController {
         } else {
             categoryEntities = service.findAll(pageable);
         }
+        return categoryEntities;
+    }
+
+    @GET
+    @Path("list")
+    public Map getCategoryList(@QueryParam("userId") Long userId, @QueryParam("start") int start, @QueryParam("size") int size,
+                               @QueryParam("sort") String sort) {
+        Map reMap = new HashMap();
+        Page<CategoryEntity> categoryEntities = getList(userId, start, size, sort);
+        List<CategoryModel> categoryModels = categoryAssemble.assembleCategoryModelList(categoryEntities);
+        reMap.put("categoryList", categoryModels);
+        reMap.put("totalPages", categoryEntities.getTotalPages());
+        return reMap;
+    }
+
+    @GET
+    @Path("current-list")
+    public Map getCurrentCategoryList(@QueryParam("start") int start, @QueryParam("size") int size,
+                                      @QueryParam("sort") String sort) {
+        Map reMap = new HashMap();
+        Long userId = (Long) session.getAttribute(Constants.USER_ID);
+        Page<CategoryEntity> categoryEntities = getList(userId, start, size, sort);
         List<CategoryModel> categoryModels = categoryAssemble.assembleCategoryModelList(categoryEntities);
         reMap.put("categoryList", categoryModels);
         reMap.put("totalPages", categoryEntities.getTotalPages());
