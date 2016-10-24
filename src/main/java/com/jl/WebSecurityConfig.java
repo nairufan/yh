@@ -43,6 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/express.html",
             "/orderdetail.js",
             "/",
+            "/MP_verify_h0emLIGJ0SsISIPS.txt",
     };
 
     private String[] adminUrls = {
