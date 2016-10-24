@@ -27,6 +27,7 @@ public class OrderAssemble {
         model.setCustomerAddress(entity.getCustomerAddress());
         model.setExistStatus(entity.getExistStatus());
         model.setPrice(entity.getPrice());
+        model.setIdStr(new Long(entity.getId()).toString());
         return model;
     }
 

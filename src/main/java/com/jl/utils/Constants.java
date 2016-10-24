@@ -29,4 +29,8 @@ public interface Constants {
     int INIT_STATUS = 0;
     int RESOLVE  = 1;
     String ERROR_MULTIPLE_LOGIN = "MULTIPLE_LOGIN";
+    String LOGIN_TYPE = "LOGIN_TYPE";
+    String ERROR_NOT_BIND = "NOT_BIND";
+    String ERROR_ALREADY_BIND = "ALREADY_BIND";
+    String OPEN_ID = "OPEN_ID";
 }

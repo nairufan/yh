@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by fannairu on 2016/6/29.
  */
 public class OrderModel extends BaseModel {
+    @JsonProperty(value = "id_str")
+    private String idStr;
     @JsonProperty(value = "customer_id")
     private long customerId;
     private int status;
@@ -92,5 +94,13 @@ public class OrderModel extends BaseModel {
 
     public void setCustomerAddress(String customerAddress) {
         this.customerAddress = customerAddress;
+    }
+
+    public String getIdStr() {
+        return idStr;
+    }
+
+    public void setIdStr(String idStr) {
+        this.idStr = idStr;
     }
 }

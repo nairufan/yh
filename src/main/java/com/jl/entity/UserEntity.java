@@ -20,6 +20,7 @@ public class UserEntity{
     private String avatar;
     private String role;
     private Integer gender;
+    private String openId;
 
     public long getId() {
         return id;
@@ -91,5 +92,13 @@ public class UserEntity{
 
     public String getPassword() {
         return password;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

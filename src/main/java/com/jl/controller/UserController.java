@@ -1,6 +1,7 @@
 package com.jl.controller;
 
 import com.jl.beans.UserBean;
+import com.jl.beans.WxLoginBean;
 import com.jl.entity.UserEntity;
 import com.jl.model.UserModel;
 import com.jl.model.assembles.UserAssemble;
@@ -27,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
-import java.sql.Date;
 import java.util.*;
 
 /**
@@ -52,14 +52,7 @@ public class UserController {
     @Value("${server.session.timeout}")
     private int timeout;
     private Logger logger = Logger.getLogger(UserController.class);
-    @Value("${wechat.appId}")
-    private String appId;
-    @Value("${wechat.appSecret}")
-    private String appSecret;
-    @Value("${wechat.authUrl}")
-    private String authUrl;
-    @Value("${wechat.accessTokenUrl}")
-    private String accessTokenUrl;
+
     /**
      * create user & login
      *
@@ -113,11 +106,51 @@ public class UserController {
         return reMap;
     }
 
-    @GET
+    @POST
     @Path("wx-login")
-    public void wxLogin() {
-        String code = request.getParameter("code");
-        logger.info("code:" + code);
+    public Map wxLogin(WxLoginBean wxLoginBean) {
+        Map reMap = new HashMap<String, Object>();
+        UserEntity entity = userService.findByOpenId(wxLoginBean.getOpenId());
+        if (entity == null) {
+            session.setAttribute(Constants.OPEN_ID, wxLoginBean.getOpenId());
+            reMap.put(Constants.ERROR_CODE, Constants.ERROR_NOT_BIND);
+        } else {
+            SecurityContextHolder.getContext().setAuthentication(authenticate(entity));
+            session.setAttribute(Constants.USER_ID, entity.getId());
+            addCookies();
+            reMap.put(Constants.RESULT, userAssemble.assembleUserModel(entity));
+        }
+
+        return reMap;
+    }
+
+    @POST
+    @Path("wx-bind")
+    public Map wxPhone(WxLoginBean wxLoginBean) {
+        Map reMap = new HashMap<String, Object>();
+        Object openId = session.getAttribute(Constants.OPEN_ID);
+        if (openId == null) {
+            reMap.put(Constants.ERROR_CODE, "Please login first.");
+            return reMap;
+        }
+        String openIdStr = openId.toString();
+        UserEntity entity = userService.findByOpenId(openIdStr);
+        if (entity == null) {
+            entity = userService.findByTel(wxLoginBean.getTel());
+            if (entity == null) {// create new account
+                entity = wxLoginBean.toUserEntity();
+            }
+            entity.setOpenId(openIdStr);
+            userService.save(entity);
+            SecurityContextHolder.getContext().setAuthentication(authenticate(entity));
+            session.setAttribute(Constants.USER_ID, entity.getId());
+            addCookies();
+        } else {
+            entity.setTel(wxLoginBean.getTel());
+            entity = userService.save(entity);
+        }
+        reMap.put(Constants.RESULT, userAssemble.assembleUserModel(entity));
+        return reMap;
     }
 
     @POST

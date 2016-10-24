@@ -16,6 +16,7 @@ public class UserModel {
     private Timestamp createTime;
     private String role;
     private Integer gender;
+    private String openId;
 
     public String getId() {
         return id;
@@ -71,5 +72,13 @@ public class UserModel {
 
     public void setGender(Integer gender) {
         this.gender = gender;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

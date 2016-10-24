@@ -8,4 +8,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  */
 public interface UserService extends PagingAndSortingRepository<UserEntity, Long> {
     public UserEntity findByTel(String phone);
+    public UserEntity findByOpenId(String openid);
 }

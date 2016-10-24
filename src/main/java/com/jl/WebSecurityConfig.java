@@ -32,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/user/register",
             "/api/user/login",
             "/api/user/wx-login",
+            "/api/user/wx-bind",
             "/api/user/loginWithPassword",
             "/api/order/detail",
             "/api/express/**",
