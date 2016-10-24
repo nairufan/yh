@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
@@ -46,10 +47,19 @@ public class UserController {
     private HttpSession session;
     @Autowired
     HttpServletResponse response;
+    @Autowired
+    HttpServletRequest request;
     @Value("${server.session.timeout}")
     private int timeout;
     private Logger logger = Logger.getLogger(UserController.class);
-
+    @Value("${wechat.appId}")
+    private String appId;
+    @Value("${wechat.appSecret}")
+    private String appSecret;
+    @Value("${wechat.authUrl}")
+    private String authUrl;
+    @Value("${wechat.accessTokenUrl}")
+    private String accessTokenUrl;
     /**
      * create user & login
      *
@@ -103,25 +113,11 @@ public class UserController {
         return reMap;
     }
 
-    @POST
-    @Path("loginWithOpenId")
-    public Map loginWithOpenId(UserBean userBean) {
-        Map reMap = new HashMap<String, Object>();
-        UserEntity userEntity = userService.findByTel(userBean.getTel());
-        if (userEntity == null) { // register
-            reMap.put(Constants.ERROR_CODE, Constants.ERROR_NOT_EXISTS);
-            return reMap;
-        }
-        if (!validatePassword(userBean.getPassword(), userEntity.getPassword())) {
-            reMap.put(Constants.ERROR_CODE, Constants.ERROR_PASSWORD);
-            return reMap;
-        }
-        SecurityContextHolder.getContext().setAuthentication(authenticate(userEntity));
-        session.setAttribute(Constants.USER_ID, userEntity.getId());
-        session.setAttribute(Constants.CHECK_CODE, null);
-        addCookies();
-        reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
-        return reMap;
+    @GET
+    @Path("wx-login")
+    public void wxLogin() {
+        String code = request.getParameter("code");
+        logger.info("code:" + code);
     }
 
     @POST

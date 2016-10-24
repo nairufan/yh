@@ -53,6 +53,5 @@ public class OrderControllerTest extends BaseTest {
         ResponseEntity<Map> responseEntity = restTemplate.postForEntity("/api/order", request, Map.class);
         Map result = (Map) responseEntity.getBody().get("Result");
         assertThat(result.get("id").toString().endsWith(content.get("id").toString()));
-        System.out.println(responseEntity);
     }
 }

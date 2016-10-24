@@ -31,6 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String[] permitAllUrls = {
             "/api/user/register",
             "/api/user/login",
+            "/api/user/wx-login",
             "/api/user/loginWithPassword",
             "/api/order/detail",
             "/api/express/**",

@@ -18,13 +18,13 @@ public class OrderEntity extends BaseEntity {
     private String customerName;
     private String customerTel;
     private String customerAddress;
-    private double price;
+    private Double price;
 
     public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
