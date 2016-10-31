@@ -8,18 +8,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import java.util.LinkedHashMap;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Created by fannairu on 2016/7/21.
@@ -37,17 +34,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/order/detail",
             "/api/express/**",
             "/api/message/**",
-            "/index.html",
             "/login.html",
             "/build/**",
             "/orderdetail.html",
             "/express.html",
             "/orderdetail.js",
-            "/",
             "/MP_verify_h0emLIGJ0SsISIPS.txt",
     };
 
     private String[] adminUrls = {
+            "/",
             "/index.html",
             "login.html",
             "detail.html",
@@ -69,6 +65,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionRegistry(sessionRegistry())
                 .and()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+
+        http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
+            @Override
+            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+                String accept = request.getHeader("accept");
+                if (accept.indexOf("text/html") >= 0) {
+                    response.sendRedirect("/login.html");
+                } else {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, authException.getMessage());
+                }
+            }
+        });
     }
 
     // Work around https://jira.spring.io/browse/SEC-2855
