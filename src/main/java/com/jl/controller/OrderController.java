@@ -26,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by fannairu on 2016/6/29.
@@ -124,11 +126,6 @@ public class OrderController {
         Map reMap = new HashMap<String, Object>();
         OrderEntity orderEntity = orderService.findOne(orderId);
         if (orderEntity != null) {
-//            String encrypt = md5.getMd5Str(orderId + orderEntity.getCustomerTel());
-//            if (!encrypt.equals(sig)) {
-//                reMap.put(Constants.RESULT, Constants.ERROR_SIG);
-//                return reMap;
-//            }
             Iterable<OrderItemEntity> orderItemEntityIterable = orderItemService.findByOrderId(orderId);
             List<Long> goodsIds = new ArrayList<Long>();
             Map<Long, Integer> goodsCountMap = new HashMap();
@@ -187,6 +184,23 @@ public class OrderController {
         List<OrderModel> orderModels = orderAssemble.assembleOrderModelList(orderEntities);
         reMap.put("orderList", orderModels);
         reMap.put("totalPages", orderEntities.getTotalPages());
+        return reMap;
+    }
+
+    @GET
+    @Path("statistics")
+    public Map getStatisticsByDateRange(@QueryParam("start") Long start, @QueryParam("end") Long end) {
+        Map reMap = new HashMap();
+        Map statisticsMap = new HashMap();
+        if (start >= end) {
+            return reMap;
+        }
+        Stream<Map> result = orderService.getStatisticsByDateRange(new Timestamp(start), new Timestamp(end));
+        result.forEach(rs -> {
+            statisticsMap.put(rs.get("date"), rs.get("counter"));
+        });
+        reMap.put("statistics", statisticsMap);
+        reMap.put("total", orderService.count());
         return reMap;
     }
 }

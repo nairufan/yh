@@ -28,7 +28,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by fannairu on 2016/6/21.
@@ -304,6 +307,23 @@ public class UserController {
         } else {
             reMap.put(Constants.RESULT, userAssemble.assembleUserModel(userEntity));
         }
+        return reMap;
+    }
+
+    @GET
+    @Path("statistics")
+    public Map getStatisticsByDateRange(@QueryParam("start") Long start, @QueryParam("end") Long end) {
+        Map reMap = new HashMap();
+        Map statisticsMap = new HashMap();
+        if (start >= end) {
+            return reMap;
+        }
+        Stream<Map> result = userService.getStatisticsByDateRange(new Timestamp(start), new Timestamp(end));
+        result.forEach(rs -> {
+            statisticsMap.put(rs.get("date"), rs.get("counter"));
+        });
+        reMap.put("statistics", statisticsMap);
+        reMap.put("total", userService.count());
         return reMap;
     }
 

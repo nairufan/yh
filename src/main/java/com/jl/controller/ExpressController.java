@@ -1,5 +1,7 @@
 package com.jl.controller;
 
+import com.jl.entity.ExpressHisEntity;
+import com.jl.service.ExpressHisService;
 import com.jl.utils.ExpressCode;
 import com.jl.utils.KdniaoTrackQueryAPI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ public class ExpressController {
     @Autowired
     private KdniaoTrackQueryAPI kdniaoTrackQueryAPI;
     private Map codeMap = ExpressCode.getCodeMap();
+    @Autowired
+    private ExpressHisService expressHisService;
 
     @GET
     @Produces("application/json")
@@ -28,6 +32,7 @@ public class ExpressController {
         String info = "";
         try {
             info = kdniaoTrackQueryAPI.getOrderByExpressNumber(expressNumber);
+            expressHisService.save(new ExpressHisEntity(expressNumber));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,6 +52,7 @@ public class ExpressController {
         if (codeObj != null) {
             realCode = codeObj.toString();
         }
+        expressHisService.save(new ExpressHisEntity(expressNumber));
         reMap.put("code", realCode);
         return reMap;
     }

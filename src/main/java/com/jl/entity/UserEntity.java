@@ -1,7 +1,6 @@
 package com.jl.entity;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
