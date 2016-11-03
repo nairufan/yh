@@ -1,4 +1,5 @@
 package com.jl.model;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Date;
@@ -9,6 +10,8 @@ import java.sql.Timestamp;
  */
 public class UserModel {
     private String id;
+    @JsonProperty(value = "id_str")
+    private String idStr;
     private String tel;
     private String username;
     private String avatar;
@@ -24,6 +27,14 @@ public class UserModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getIdStr() {
+        return idStr;
+    }
+
+    public void setIdStr(String idStr) {
+        this.idStr = idStr;
     }
 
     public String getTel() {

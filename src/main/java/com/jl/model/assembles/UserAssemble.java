@@ -24,6 +24,7 @@ public class UserAssemble {
         model.setRole(entity.getRole());
         model.setGender(entity.getGender());
         model.setOpenId(entity.getOpenId());
+        model.setIdStr(new Long(entity.getId()).toString());
         return model;
     }
 
