@@ -10,6 +10,8 @@ import java.sql.Date;
 public class AdviceModel {
     private long id;
     private long userId;
+    @JsonProperty(value = "user_id_str")
+    private String userIdStr;
     @JsonProperty(value = "create_time")
     private Date createTime;
     private String content;
@@ -53,5 +55,13 @@ public class AdviceModel {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getUserIdStr() {
+        return userIdStr;
+    }
+
+    public void setUserIdStr(String userIdStr) {
+        this.userIdStr = userIdStr;
     }
 }

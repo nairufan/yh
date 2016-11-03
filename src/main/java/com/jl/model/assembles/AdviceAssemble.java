@@ -19,6 +19,7 @@ public class AdviceAssemble {
         adviceModel.setContent(adviceEntity.getContent());
         adviceModel.setId(adviceEntity.getId());
         adviceModel.setUserId(adviceEntity.getUserId());
+        adviceModel.setUserIdStr(new Long(adviceEntity.getUserId()).toString());
         return adviceModel;
     }
 
