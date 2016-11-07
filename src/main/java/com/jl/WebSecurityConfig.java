@@ -45,7 +45,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String[] adminUrls = {
             "/",
             "/index.html",
-            "login.html",
             "detail.html",
             "advice.html"
     };
