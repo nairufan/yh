@@ -9,8 +9,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
+import java.sql.Timestamp;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 /**
  * Created by fannairu on 2016/7/24.
@@ -54,6 +56,24 @@ public class ExpressController {
         }
         expressHisService.save(new ExpressHisEntity(expressNumber));
         reMap.put("code", realCode);
+        return reMap;
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("statistics")
+    public Map getStatisticsByDateRange(@QueryParam("start") Long start, @QueryParam("end") Long end) {
+        Map reMap = new HashMap();
+        Map statisticsMap = new HashMap();
+        if (start >= end) {
+            return reMap;
+        }
+        Stream<Map> result = expressHisService.getStatisticsByDateRange(new Timestamp(start), new Timestamp(end));
+        result.forEach(rs -> {
+            statisticsMap.put(rs.get("date"), rs.get("counter"));
+        });
+        reMap.put("statistics", statisticsMap);
+        reMap.put("total", expressHisService.count());
         return reMap;
     }
 }

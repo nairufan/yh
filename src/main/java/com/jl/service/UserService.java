@@ -18,7 +18,7 @@ public interface UserService extends PagingAndSortingRepository<UserEntity, Long
 
     public UserEntity findByOpenId(String openid);
 
-    @Query(value = "select date_format(DATE(create_time), '%Y-%m-%d') as date, count(*) as counter\n" +
+    @Query(value = "select date_format(DATE(createTime), '%Y-%m-%d') as date, count(*) as counter\n" +
             "from UserEntity \n" +
             "where createTime between :start and :end\n" +
             "group by DATE(createTime)")

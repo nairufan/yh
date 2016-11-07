@@ -19,7 +19,7 @@ public interface OrderService extends PagingAndSortingRepository<OrderEntity, Lo
 
     public Page<OrderEntity> findByUserId(long userId, Pageable pageable);
 
-    @Query(value = "select date_format(DATE(create_time), '%Y-%m-%d') as date, count(*) as counter\n" +
+    @Query(value = "select date_format(DATE(createTime), '%Y-%m-%d') as date, count(*) as counter\n" +
             "from OrderEntity \n" +
             "where createTime between :start and :end\n" +
             "group by DATE(createTime)")
