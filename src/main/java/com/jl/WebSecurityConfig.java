@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
                 String accept = request.getHeader("accept");
-                if (accept.indexOf("text/html") >= 0) {
+                if (accept != null && accept.indexOf("text/html") >= 0) {
                     response.sendRedirect("/login.html");
                 } else {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, authException.getMessage());
